@@ -118,8 +118,8 @@ USE_TZ = True
 
 # frontend estatico
 STATIC_URL = '/assets/'
-STATICFILES_DIR = (
-    os.path.join(BASE_DIR, 'assets')
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'assets'),
 )
 
 #archivo estaticos de subida 
