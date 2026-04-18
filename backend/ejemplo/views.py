@@ -5,7 +5,7 @@ from http import HTTPStatus
 #upload
 from django.core.files.storage import FileSystemStorage
 import os
-from datetime import datetime, date, timedelta
+from datetime import datetime
 
 # Create your views here.
 class Class_Ejemplo(APIView):
