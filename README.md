@@ -1,6 +1,7 @@
 # Vue Django Fullstack App
 
 Aplicación Fullstack moderna combinando Django y Vue.js con autenticación JWT.
+Restaurante
 
 ## Stack Tecnológico
 
@@ -38,6 +39,6 @@ npm install
 npm run dev
 ```
 
-## Desarrollador
+## Desarrollado por
 
 DairXP
