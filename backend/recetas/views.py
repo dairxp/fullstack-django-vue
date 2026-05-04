@@ -11,5 +11,5 @@ class Clase1(APIView):
     
     def get(self, request):
         data =Receta.objects.order_by('-id').all()
-        datos_json= RecetaSerilalizer(data, many=True)
+        datos_json= RecetaSerializer(data, many=True)
         return JsonResponse({"data":datos_json.data})
