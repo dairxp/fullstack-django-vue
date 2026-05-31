@@ -19,7 +19,7 @@ Aplicación Fullstack moderna combinando Django y Vue.js con autenticación JWT
 
 - Python 3.8+
 - Node.js 16+
-- npm o yarn
+- pnpm
 
 ## Instalación
 
@@ -34,7 +34,7 @@ python manage.py runserver
 ### Frontend
 ```bash
 cd frontend
-npm install
+pnpm install
 npm run dev
 ```
 
