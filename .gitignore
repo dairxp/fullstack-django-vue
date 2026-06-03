@@ -31,6 +31,8 @@ backend/uploads/
 
 # Virtual Environment
 venv/
+.venv/
+/backend/.venv/
 env/
 ENV/
 .env

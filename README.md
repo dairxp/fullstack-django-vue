@@ -18,17 +18,26 @@ Aplicación Fullstack moderna combinando Django y Vue.js con autenticación JWT
 ## Requisitos
 
 - Python 3.8+
+- uv (recomendado para el backend)
 - Node.js 16+
 - pnpm
 
 ## Instalación
 
-### Backend
+### Backend (uv)
 ```bash
 cd backend
-pip install -r requirements.txt
+uv venv .venv
+source .venv/Scripts/activate   # Git Bash
+# PowerShell: .\.venv\Scripts\activate
+uv pip install -r requirements.txt
 python manage.py migrate
 python manage.py runserver
+```
+
+**Instalar paquetes nuevos (dentro del entorno):**
+```bash
+uv pip install nombre_paquete
 ```
 
 ### Frontend
