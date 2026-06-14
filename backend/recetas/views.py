@@ -1,4 +1,3 @@
-from curses import OK
 from functools import _NOT_FOUND
 from rest_framework.views import APIView
 from django.http.response import JsonResponse
@@ -10,6 +9,7 @@ from .models import *
 from django.utils.dateformat import DateFormat
 from dotenv import load_dotenv
 import os
+from datetime import datetime
 
 # Create your views here.
 class Clase1(APIView):
@@ -18,6 +18,14 @@ class Clase1(APIView):
         data =Receta.objects.order_by('-id').all()
         datos_json= RecetaSerializer(data, many=True)
         return JsonResponse({"data":datos_json.data})
+
+    def post(self, request):
+        try:
+            Receta.objects.create(nombre=request.data["nombre"], tiempo=request.data.get("tiempo"), descripcion=request.data["description"], categoria_id=request.data.get("categoria_id"), fecha=datetime.now(), foto="SSS")
+
+            return JsonResponse({"estado":"OK", "mensaje": "Se crea el registro existosamente"})
+        except Exception as e:
+            raise Http404
 
 class Clase2(APIView):
 
