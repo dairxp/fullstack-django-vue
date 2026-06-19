@@ -20,7 +20,7 @@ Aplicación Fullstack moderna combinando Django y Vue.js con autenticación JWT
 ## Requisitos
 
 - Python 3.8+
-- uv (recomendado para el backend)
+- uv
 - Node.js 16+
 - pnpm
 
@@ -42,7 +42,3 @@ cd frontend
 pnpm install
 pnpm run dev
 ```
-
-## Desarrollado por
-
-DairXP
