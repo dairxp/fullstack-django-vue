@@ -20,10 +20,13 @@ class Clase1(APIView):
         return JsonResponse({"data":datos_json.data})
 
     def post(self, request):
+        if request.data.get("nombre") or not request.data["nombre"]:
+            return JsonResponse({"estado":"error", "mensaje":"El campo es obligatoria"}, status=HTTPStatus.BAD_REQUEST)
         try:
-            Receta.objects.create(nombre=request.data["nombre"], tiempo=request.data.get("tiempo"), descripcion=request.data["description"], categoria_id=request.data.get("categoria_id"), fecha=datetime.now(), foto="SSS")
+            Receta.objects.create(nombre=request.data["nombre"], tiempo=request.data.get("tiempo"), descripcion=request.data["descripcion"], categorias_id=request.data.get("categoria_id"), fecha=datetime.now(), foto="SSS")
 
-            return JsonResponse({"estado":"OK", "mensaje": "Se crea el registro existosamente"})
+             ### Receta.objects.create(nombre=request.data["nombre"], tiempo=request.data.get("tiempo"), descripcion=request.data["descripcion"], categorias_id=request.data.get("categoria_id"), fecha=datetime.now(), foto="SSS")
+            return JsonResponse({"estado":"OK", "mensaje": "Se crea el registro existosamente"}, status=HTTPStatus.CREATED)
         except Exception as e:
             raise Http404
 
