@@ -33,6 +33,8 @@ cd backend
 uv sync
 uv run python manage.py migrate
 uv run python manage.py runserver
+
+uv run manage.py runserver
 ```
 
 ### Frontend
