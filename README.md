@@ -30,9 +30,9 @@ Aplicación Fullstack moderna combinando Django y Vue.js con autenticación JWT
 
 ```bash
 cd backend
-uv pip install -r requirements.txt
-python manage.py migrate
-python manage.py runserver
+uv sync
+uv run python manage.py migrate
+uv run python manage.py runserver
 ```
 
 ### Frontend
