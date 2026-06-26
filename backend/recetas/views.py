@@ -20,8 +20,20 @@ class Clase1(APIView):
         return JsonResponse({"data":datos_json.data})
 
     def post(self, request):
-        if request.data.get("nombre") or not request.data["nombre"]:
-            return JsonResponse({"estado":"error", "mensaje":"El campo es obligatoria"}, status=HTTPStatus.BAD_REQUEST)
+        if request.data.get("nombre")==None or not request.data["nombre"]:
+            return JsonResponse({"estado":"error", "mensaje":"El campo nombre es obligatoria"}, status=HTTPStatus.BAD_REQUEST)
+        if request.data.get("tiempo")==None or not request.data["tiempo"]:
+            return JsonResponse({"estado":"error", "mensaje":"El campo tiempo es obligatoria"}, status=HTTPStatus.BAD_REQUEST)
+        if request.data.get("descripcion")==None or not request.data["descripcion"]:
+            return JsonResponse({"estado":"error", "mensaje":"El campo descripcion es obligatoria"}, status=HTTPStatus.BAD_REQUEST)
+        if request.data.get("categoria_id")==None or not request.data["categoria_id"]:
+            return JsonResponse({"estado":"error", "mensaje":"El campo categoria_id es obligatoria"}, status=HTTPStatus.BAD_REQUEST)
+
+        #select *from recetas where nombre=request.data.get("nombre")
+        #validamos nombre de receta este disponible
+        if Receta.objects.filter(nombre=request.data.get("nombre")).exists():
+            return JsonResponse({"estado":"error", "mensaje":f"El nombre {request.data['nombre']} no esta disponible"}, status=HTTPStatus.BAD_REQUEST)
+
         try:
             Receta.objects.create(nombre=request.data["nombre"], tiempo=request.data.get("tiempo"), descripcion=request.data["descripcion"], categorias_id=request.data.get("categoria_id"), fecha=datetime.now(), foto="SSS")
 
