@@ -6,6 +6,7 @@ from .serializers import CategoriaSerilalizer
 from http import HTTPStatus
 from django.http import Http404
 from django.utils.text import slugify
+from recetas.models import *
 
 class Clase1(APIView):
 
@@ -24,7 +25,7 @@ class Clase1(APIView):
             return JsonResponse({"estado":"ok", "mensaje": "Se crea el registro existosamente"}, status=HTTPStatus.CREATED)
         except Exception as e:
             raise Http404
-    
+
 class Clase2(APIView):
 
     def get(self, request, id):
@@ -39,21 +40,26 @@ class Clase2(APIView):
     def put(self, request, id):
         if request.data.get("nombre") == None:
             return JsonResponse({"estado":"error", "mensaje":"El campo nombre es obligatorio"}, status=HTTPStatus.BAD_REQUEST)
-        
+
         if not request.data.get("nombre"):
             return JsonResponse({"estado":"error", "mensaje":"El campo nombre es obligatorio"}, status=HTTPStatus.BAD_REQUEST)
-        
+
         try:
             data = Categoria.objects.filter(pk=id).get()
             Categoria.objects.filter(pk=id).update(nombre=request.data.get("nombre"), slug=slugify(request.data.get("nombre")))
             return JsonResponse({"estado":"ok", "mensaje": "Se modifico el registro existosamente"}, status=HTTPStatus.OK)
         except Categoria.DoesNotExist:
             raise Http404
-    
+
     def delete(self,  request, id):
         try:
             data = Categoria.objects.filter(pk=id).get()
-            Categoria.objects.filter(pk=id).delete()
-            return JsonResponse({"estado":"ok", "mensaje": "Se elimino el registro existosamente"}, status=HTTPStatus.OK)
+
         except Categoria.DoesNotExist:
             raise Http404
+
+        if Receta.objects.filter(categorias_id=id).exists():
+            return JsonResponse({"estado":"error", "mensaje": "ocurrio un error inesperado"}, status=HTTPStatus.BAD_REQUEST)
+
+        Categoria.objects.filter(pk=id).delete()
+        return JsonResponse({"estado":"ok", "mensaje": "Se elimino el registro existosamente"}, status=HTTPStatus.OK)

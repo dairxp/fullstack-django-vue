@@ -11,6 +11,8 @@ from dotenv import load_dotenv
 import os
 from datetime import datetime
 from django.core.files.storage import FileSystemStorage
+# Agrega esta línea para que BASE_URL funcione
+load_dotenv()
 
 # Create your views here.
 class Clase1(APIView):
@@ -51,19 +53,24 @@ class Clase1(APIView):
         except Exception as e:
             return JsonResponse({"estado":"error", "mensaje":"Debe adjuntar una foto para la receta"}, status=HTTPStatus.BAD_REQUEST)
 
-        try:
-            fs.save(f"recetas/{foto}", request.FILES['foto'])
-            fs.url(request.FILES['foto'])
-        except Exception as e:
-            return JsonResponse({"estado":"error", "mensaje":"Se produjo un error al subir un archivo"}, status=HTTPStatus.BAD_REQUEST)
+        print(request.FILES["foto"].content_type)
+        if request.FILES["foto"].content_type=="image/jpeg" or request.FILES["foto"].content_type=="image/png":
+            try:
+                fs.save(f"recetas/{foto}", request.FILES['foto'])
+                fs.url(request.FILES['foto'])
+            except Exception as e:
+                return JsonResponse({"estado":"error", "mensaje":"Se produjo un error al subir un archivo"}, status=HTTPStatus.BAD_REQUEST)
 
-        try:
-            Receta.objects.create(nombre=request.data["nombre"], tiempo=request.data.get("tiempo"), descripcion=request.data["descripcion"], categorias_id=request.data.get("categoria_id"), fecha=datetime.now(), foto=foto)
+            try:
+                Receta.objects.create(nombre=request.data["nombre"], tiempo=request.data.get("tiempo"), descripcion=request.data["descripcion"], categorias_id=request.data.get("categoria_id"), fecha=datetime.now(), foto=foto)
 
-             ### Receta.objects.create(nombre=request.data["nombre"], tiempo=request.data.get("tiempo"), descripcion=request.data["descripcion"], categorias_id=request.data.get("categoria_id"), fecha=datetime.now(), foto="SSS")
-            return JsonResponse({"estado":"OK", "mensaje": "Se crea el registro existosamente"}, status=HTTPStatus.CREATED)
-        except Exception as e:
-            raise Http404
+                ### Receta.objects.create(nombre=request.data["nombre"], tiempo=request.data.get("tiempo"), descripcion=request.data["descripcion"], categorias_id=request.data.get("categoria_id"), fecha=datetime.now(), foto="SSS")
+                return JsonResponse({"estado":"OK", "mensaje": "Se crea el registro existosamente"}, status=HTTPStatus.CREATED)
+            except Exception as e:
+                raise Http404
+
+        return JsonResponse({"estado":"error", "mensaje":"La foto solo puede ser png y jng"})
+
 
 class Clase2(APIView):
 
@@ -74,3 +81,60 @@ class Clase2(APIView):
 
         except Exception as e:
             return JsonResponse({"estado":"error", "mensaje":"Recursos no disponible"}, status=HTTPStatus.NOT_FOUND)
+
+
+    def put(self, request, id):
+        try:
+            data = Receta.objects.filter(id=id).get()
+        except Receta.DoesNotExist:
+            return JsonResponse({"estado":"error", "mensaje":"Recursos no disponible"}, status=HTTPStatus.NOT_FOUND)
+
+
+        # 2. Validaciones de campos obligatorios
+        # Usamos una lista para no repetir tantos 'if' y que el código sea más limpio
+
+        # if request.data.get("nombre")==None or not request.data["nombre"]:
+        #     return JsonResponse({"estado":"error", "mensaje":"El campo nombre es obligatoria"}, status=HTTPStatus.BAD_REQUEST)
+        # if request.data.get("tiempo")==None or not request.data["tiempo"]:
+        #     return JsonResponse({"estado":"error", "mensaje":"El campo tiempo es obligatoria"}, status=HTTPStatus.BAD_REQUEST)
+
+        campos_obligatorios = ["nombre", "tiempo", "descripcion", "categoria_id"]
+        for campo in campos_obligatorios:
+            if not request.data.get(campo):
+                return JsonResponse({"estado":"error", "mensaje":f"El campo {campo} es obligatorio"}, status=HTTPStatus.BAD_REQUEST)
+
+        try:
+            categoria = Categoria.objects.get(pk=request.data.get("categoria_id"))
+        except Categoria.DoesNotExist:
+            return JsonResponse({"estado":"error", "mensaje":"La categoria_id no existe en al base de datos"}, status=HTTPStatus.BAD_REQUEST)
+
+        # Actualización
+        try:
+            Receta.objects.filter(pk=id).update(
+                nombre=request.data["nombre"],
+                slug=slugify(request.data["nombre"]),
+                tiempo=request.data.get("tiempo"),
+                descripcion=request.data["descripcion"],
+                categorias_id=request.data.get("categoria_id")
+            )
+            return JsonResponse({"estado":"ok", "mensaje":"Se modifico el registro"}, status=HTTPStatus.OK)
+
+        except Exception as e:
+            return JsonResponse({"estado":"error", "mensaje":"ocurrio un error"}, status=HTTPStatus.NOT_FOUND)
+
+    def delete(self, request, id):
+        try:
+            data = Receta.objects.filter(id=id).get()
+        except Receta.DoesNotExist:
+            return JsonResponse({"estado":"error", "mensaje":"Recursos no disponible"}, status=HTTPStatus.NOT_FOUND)
+
+        #borrar la foto de la carpeta
+        os.remove(f"./uploads/recetas/{data.foto}")
+        # En lugar
+        # ruta = f"uploads/recetas/{data.foto}"
+        # if os.path.exists(ruta):
+        #     os.remove(ruta)
+
+        #borrar el registor de la BD
+        Receta.objects.filter(id=id).delete()
+        return JsonResponse({"estado":"ok", "mensaje":"Se elimina el registro existosamente"}, status=HTTPStatus.OK)
