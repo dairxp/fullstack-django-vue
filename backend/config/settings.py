@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "categorias",
     "recetas",
+    "contacto",
 ]
 
 MIDDLEWARE = [
@@ -121,7 +122,7 @@ TIME_ZONE = 'America/Lima'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -133,6 +134,6 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'assets'),
 )
 
-#archivo estaticos de subida 
+#archivo estaticos de subida
 MEDIA_URL= '/uploads/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "uploads")

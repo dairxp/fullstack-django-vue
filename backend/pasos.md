@@ -2,9 +2,12 @@
 
     django-admin startproject config .
 
-### crerar app
+### crerar app / cualquiera vale
 
-    django-admin startapp home
+```bash
+uv run django-admin startapp home
+uv run python manage.py startapp contacto
+```
 
 ### Backend (uv)
 
@@ -29,8 +32,9 @@ _(Esto añadirá el paquete a `pyproject.toml`, actualizará `uv.lock` y lo inst
 Para ejecutar cualquier script o comando de django, antepón `uv run`:
 
 ```bash
-uv run python manage.py makemigrations
-uv run python manage.py createsuperuser
+uv run manage.py makemigrations
+uv run manage.py migrate
+uv run manage.py createsuperuser
 ```
 
 **para ver imagen**
