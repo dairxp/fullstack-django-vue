@@ -4,6 +4,8 @@ from django.http.response import JsonResponse
 from http import HTTPStatus
 from datetime import datetime
 
+from utilidades import utilidades
+
 # Create your views here.
 
 class Clase1(APIView):
@@ -29,7 +31,20 @@ class Clase1(APIView):
                 mensaje=request.data["mensaje"],
                 fecha=datetime.now()
             )
+
+            html=f"""
+                <h1>Nuevo mensaje de sitio web</h1>
+                <ul>
+                    <li>Nombre:{request.data['nombre']}</li>
+                    <li>Email:{request.data['correo']}</li>
+                    <li>Telefono:{request.data['telefono']}</li>
+                    <li>Mensaje:{request.data['mensaje']}</li>
+                </ul>
+            """
+            utilidades.sendMail(html, "Prueba curso", request.data['correo'])
+
             return JsonResponse({"estado":"ok", "mensaje": "Se crea el contacto"}, status=HTTPStatus.OK)
+
 
         except Exception as e:
             return JsonResponse({"estado":"error", "mensaje": "Ocurrio un error inesperado"}, status=HTTPStatus.BAD_REQUEST)
