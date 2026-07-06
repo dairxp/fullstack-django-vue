@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 import os
 from datetime import datetime
 from django.core.files.storage import FileSystemStorage
+from seguridad.decorators import logueado
 # Agrega esta línea para que BASE_URL funcione
 load_dotenv()
 
@@ -22,6 +23,7 @@ class Clase1(APIView):
         datos_json= RecetaSerializer(data, many=True)
         return JsonResponse({"data":datos_json.data})
 
+    @logueado()
     def post(self, request):
         if request.data.get("nombre")==None or not request.data["nombre"]:
             return JsonResponse({"estado":"error", "mensaje":"El campo nombre es obligatoria"}, status=HTTPStatus.BAD_REQUEST)
@@ -82,7 +84,7 @@ class Clase2(APIView):
         except Exception as e:
             return JsonResponse({"estado":"error", "mensaje":"Recursos no disponible"}, status=HTTPStatus.NOT_FOUND)
 
-
+    @logueado()
     def put(self, request, id):
         try:
             data = Receta.objects.filter(id=id).get()
@@ -122,6 +124,7 @@ class Clase2(APIView):
         except Exception as e:
             return JsonResponse({"estado":"error", "mensaje":"ocurrio un error"}, status=HTTPStatus.NOT_FOUND)
 
+    @logueado()
     def delete(self, request, id):
         try:
             data = Receta.objects.filter(id=id).get()
