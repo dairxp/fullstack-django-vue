@@ -13,15 +13,15 @@ Aplicación Fullstack moderna combinando Django y Vue.js con autenticación JWT
 
 ### Frontend
 
-- **Vue 3** - Framework JavaScript reactivo
+- **Vue ** - Framework JavaScript reactivo
 - **Pinia** - State management
 - **Axios** - Cliente HTTP
 
 ## Requisitos
 
-- Python 3.8+
+- Python
 - uv
-- Node.js 16+
+- Node.js
 - pnpm
 
 ## Instalación
